@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jay Maa Vegetable Shop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@3.6.0/dist/full.css" rel="stylesheet" />
+</head>
+<body class="bg-green-50">
+
+  <!-- Navbar -->
+  <div class="navbar bg-green-200">
+    <div class="flex-1">
+      <a class="btn btn-ghost text-xl">🥦 Jay Maa Vegetable Shop</a>
+    </div>
+    <div class="flex-none">
+      <button class="btn btn-outline" onclick="showCart()">🛒 Cart <span id="cart-count" class="ml-1">0</span></button>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero min-h-[40vh] bg-green-100">
+    <div class="hero-content text-center">
+      <div class="max-w-xl">
+        <h1 class="text-4xl font-bold">Fresh & Local Vegetables</h1>
+        <p class="py-4">Get farm-fresh veggies delivered to your home from Palghar!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Booking Time -->
+  <div class="text-center text-green-800 font-medium text-lg mt-2 mb-4">
+    ⏰ Orders accepted between <strong>7:00 AM to 7:00 PM</strong>
+  </div>
+
+  <!-- Product Grid -->
+  <section class="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <!-- Product Cards here -->
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer p-4 bg-green-200 text-black mt-10 text-center">
+    <p>📍 Location: shop no 4 / kanhaiya meadows building Palghar Maharashtra | 📞 Contact: 9356742543 | ✉️ Email: chaurasiyasumit25539@gmail.com</p>
+    <p class="mt-2">© 2025 Jay Maa Vegetable Shop</p>
+  </footer>
+
+  <!-- Script -->
+  <script>
+ const products = [
+  { name: "टमाटर / Tomatoes", price: 40, image: "tomato.jpeg" }, 
+  { name: "पालक / Spinach", price: 20, image: "spinch.jpeg" },
+  { name: "गाजर / Carrots", price: 35, image: "carrot.jpeg" },
+  { name: "फूलगोभी / Cauliflower", price: 45, image: "cauliflower.jpeg" },
+  { name: "आलू / Potatoes", price: 30, image: "potato.jpeg" },
+  { name: "प्याज़ / Onions", price: 25, image: "onion.jpeg" },
+  { name: "पत्ता गोभी / Cabbage", price: 30, image: "cabbage.jpeg" },
+  { name: "मिर्च / Chillies", price: 50, image: "chillies.jpeg" },
+  { name: "बैंगन / Brinjal", price: 38, image: "brinjal.jpeg" },
+  { name: "लौकी / Bottle Gourd", price: 28, image: "bottle-gourd.jpeg" },
+  { name: "भिंडी / Lady Finger", price: 32, image: "lady-finger.jpeg" },
+  { name: "मटर / Green Peas", price: 36, image: "green-peas.jpeg" },
+  { name: "धनिया / Coriander", price: 15, image: "coriander.jpeg" },
+  { name: "लहसुन / Garlic", price: 60, image: "garlic.jpeg" },
+  { name: "अदरक / Ginger", price: 55, image: "ginger.jpeg" },
+  { name: "स्वीट कॉर्न / Sweet Corn", price: 40, image: "sweet-corn.jpeg" },
+  { name: "मूली / Radish", price: 22, image: "radish.jpeg" },
+  { name: "शलजम / Turnip", price: 30, image: "turnip.jpeg" },
+  { name: "चुकंदर / Beetroot", price: 33, image: "beetroot.jpeg" },
+  { name: "कद्दू / Pumpkin", price: 25, image: "pumpkin.jpeg" }
+];
+
+
+  function getCart() {
+    const cart = localStorage.getItem("cart");
+    return cart ? JSON.parse(cart) : [];
+  }
+
+  function saveCart(cart) {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }
+
+  function addToCart(name, price) {
+    price = Number(price);
+    if (isNaN(price)) return;
+
+    let cart = getCart();
+    const index = cart.findIndex(item => item.name === name);
+    if (index !== -1) {
+      cart[index].qty++;
+    } else {
+      cart.push({ name, price, qty: 1 });
+    }
+    saveCart(cart);
+    updateCartCount();
+    alert(`✅ "${name}" added to cart!`);
+  }
+
+  function updateCartCount() {
+    const cart = getCart();
+    const count = cart.reduce((sum, item) => sum + item.qty, 0);
+    document.getElementById("cart-count").textContent = count;
+  }
+
+  function showCart() {
+    const cart = getCart();
+    if (cart.length === 0) {
+      alert("🛒 Your cart is empty.");
+      return;
+    }
+
+    let message = "🛒 Cart Summary:\n\n";
+    let total = 0;
+    cart.forEach(item => {
+      const subtotal = item.qty * Number(item.price);
+      if (!isNaN(subtotal)) {
+        total += subtotal;
+        message += `${item.name} x ${item.qty} = ₹${subtotal}\n`;
+      }
+    });
+    message += `\nTotal: ₹${total}`;
+    message += `\n\n✅ Do you want to confirm the order?`;
+
+    if (confirm(message)) {
+      localStorage.removeItem("cart");
+      updateCartCount();
+      alert("✅ Order confirmed! Thank you for shopping with Jay Maa Vegetable Shop.");
+    }
+  }
+
+  window.onload = () => {
+    const container = document.querySelector("section");
+    products.forEach(p => {
+      const card = `
+        <div class="card bg-white shadow-xl">
+          <figure><img src="${p.image}" alt="${p.name}" class="w-full h-48 object-cover" /></figure>
+          <div class="card-body">
+            <h2 class="card-title">${p.name}</h2>
+            <p>₹${p.price}/kg</p>
+            <button class="btn btn-success" onclick="addToCart('${p.name.replace(/'/g, "\\'")}', ${p.price})">Add to Cart</button>
+          </div>
+        </div>
+      `;
+      container.insertAdjacentHTML("beforeend", card);
+    });
+    updateCartCount();
+  };
+  </script>
+
+</body>
+</html>
